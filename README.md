@@ -1,8 +1,6 @@
-# ReplicateRails
+# Replicate Rails Gem
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/replicate/rails`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This gem bundles the [replicate-ruby](https://github.com/dreamingtulpa/replicate-ruby) gem and adds webhook support for replicate.com.
 
 ## Installation
 
@@ -12,17 +10,39 @@ Add this line to your application's Gemfile:
 gem 'replicate-rails'
 ```
 
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install replicate-rails
-
 ## Usage
 
-TODO: Write usage instructions here
+Setup an initializer and webhook adapter class:
+
+```ruby
+# config/initializers/replicate.rb
+Replicate.client.api_token = "your-api-token"
+
+ReplicateRails.configure do |config|
+  config.webhook_adapter = ReplicateWebhook.new
+end
+
+class ReplicateWebhook
+  def call(prediction)
+    # do your thing
+  end
+end
+```
+
+and mount the route:
+
+```ruby
+# config/routes.rb
+mount ReplicateRails::Engine => "/replicate/webhook"
+```
+
+Now you can run predictions as follows:
+
+```
+model = Replicate.client.retrieve_model("stability-ai/stable-diffusion")
+version = model.latest_version
+version.predict(prompt: "a beautiful sunset", "https://yourdomain.tld/replicate/webhook")
+```
 
 ## Development
 
