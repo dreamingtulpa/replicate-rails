@@ -7,7 +7,7 @@ This gem bundles the [replicate-ruby](https://github.com/dreamingtulpa/replicate
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'replicate-rails'
+gem 'replicate-rails', require: 'replicate_rails'
 ```
 
 ## Usage
